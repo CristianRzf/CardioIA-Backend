@@ -1,0 +1,28 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Entornos Virtuales ---
+venv/
+env/
+.venv/
+
+# --- Variables de Entorno (¡SEGURIDAD!) ---
+.env
+
+# --- Archivos de Sistema ---
+.DS_Store
+Thumbs.db
+
+# --- Archivos de Machine Learning (Grandes) ---
+# Ignoramos los modelos entrenados localmente para no saturar el repo
+# (A menos que quieras subirlos, pero suelen ser pesados)
+*.pkl
+
+# --- Archivos de Datos y Credenciales ---
+# Ignoramos TODOS los JSON por seguridad (credenciales de Firebase)
+*.json
+
+# EXCEPCIÓN: Queremos mantener 'cardio_columns.json' porque es vital para el modelo
+!cardio_columns.json
