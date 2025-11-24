@@ -114,10 +114,18 @@ class PredictionResponse(BaseModel):
 app = FastAPI(title="CardioIA API")
 
 # --- 4. CORS ---
-origins = ["*"]
+origins = [
+    "http://localhost:5173",  # Frontend en desarrollo (Vite)
+    "http://localhost:4173",  # Frontend en preview
+    "https://cardioia-adbf6.web.app", # Tu frontend en Firebase (cuando lo tengas)
+    "https://cardioia-adbf6.firebaseapp.com", # Tu frontend en Firebase (alternativo)
+    # OJO: Si esto sigue fallando, usa ["*"] TEMPORALMENTE para probar:
+    # "*"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins, # O usa ["*"] si quieres permitir todo
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
