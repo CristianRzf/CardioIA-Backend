@@ -13,17 +13,22 @@ from firebase_admin import credentials, firestore
 
 # --- 0. Cargar variables de entorno (.env) ---
 # Esto carga las claves desde el archivo .env cuando estás en local
-load_dotenv()
+# Truco para encontrar archivos en la misma carpeta que main.py
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# --- 1. Cargar modelo, scaler y columnas ---
 try:
-    model = joblib.load('cardio_model.pkl')
-    scaler = joblib.load('cardio_scaler.pkl')
-    with open('cardio_columns.json', 'r') as f:
+    # Construimos la ruta completa
+    model_path = os.path.join(BASE_DIR, 'cardio_model.pkl')
+    scaler_path = os.path.join(BASE_DIR, 'cardio_scaler.pkl')
+    columns_path = os.path.join(BASE_DIR, 'cardio_columns.json')
+
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
+    with open(columns_path, 'r') as f:
         train_columns = json.load(f)
-    print("--- ✅ Backend: Modelo, scaler y columnas cargados exitosamente. ---")
+    print(f"--- ✅ Backend: Modelos cargados desde {BASE_DIR} ---")
 except Exception as e:
-    print("--- ❌ ERROR CRÍTICO AL CARGAR ARCHIVOS ---")
+    print(f"--- ❌ Error cargando modelos: {e}")
     print("Asegúrate de que .pkl y .json estén en la misma carpeta.")
     model, scaler, train_columns = None, None, None
 
