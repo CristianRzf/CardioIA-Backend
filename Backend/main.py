@@ -13,22 +13,17 @@ from firebase_admin import credentials, firestore
 
 # --- 0. Cargar variables de entorno (.env) ---
 # Esto carga las claves desde el archivo .env cuando estás en local
-# Truco para encontrar archivos en la misma carpeta que main.py
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv()
 
+# --- 1. Cargar modelo, scaler y columnas ---
 try:
-    # Construimos la ruta completa
-    model_path = os.path.join(BASE_DIR, 'cardio_model.pkl')
-    scaler_path = os.path.join(BASE_DIR, 'cardio_scaler.pkl')
-    columns_path = os.path.join(BASE_DIR, 'cardio_columns.json')
-
-    model = joblib.load(model_path)
-    scaler = joblib.load(scaler_path)
-    with open(columns_path, 'r') as f:
+    model = joblib.load('cardio_model.pkl')
+    scaler = joblib.load('cardio_scaler.pkl')
+    with open('cardio_columns.json', 'r') as f:
         train_columns = json.load(f)
-    print(f"--- ✅ Backend: Modelos cargados desde {BASE_DIR} ---")
+    print("--- ✅ Backend: Modelo, scaler y columnas cargados exitosamente. ---")
 except Exception as e:
-    print(f"--- ❌ Error cargando modelos: {e}")
+    print("--- ❌ ERROR CRÍTICO AL CARGAR ARCHIVOS ---")
     print("Asegúrate de que .pkl y .json estén en la misma carpeta.")
     model, scaler, train_columns = None, None, None
 
@@ -114,18 +109,10 @@ class PredictionResponse(BaseModel):
 app = FastAPI(title="CardioIA API")
 
 # --- 4. CORS ---
-origins = [
-    "http://localhost:5173",  # Frontend en desarrollo (Vite)
-    "http://localhost:4173",  # Frontend en preview
-    "https://cardioia-adbf6.web.app", # Tu frontend en Firebase (cuando lo tengas)
-    "https://cardioia-adbf6.firebaseapp.com", # Tu frontend en Firebase (alternativo)
-    # OJO: Si esto sigue fallando, usa ["*"] TEMPORALMENTE para probar:
-    # "*"
-]
-
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins, # O usa ["*"] si quieres permitir todo
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
